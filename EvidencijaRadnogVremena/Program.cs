@@ -1,5 +1,8 @@
 
 using EvidencijaRadnogVremena.Data;
+using EvidencijaRadnogVremena.Data.Repositories;
+using EvidencijaRadnogVremena.Data.Repositories.Interfaces;
+using EvidencijaRadnogVremena.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace EvidencijaRadnogVremena
@@ -13,6 +16,9 @@ namespace EvidencijaRadnogVremena
             //Add DB
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnString")));
+
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,4 @@
-﻿using EvidencijaRadnogVremena.Data.Repository.Interfaces;
+﻿using EvidencijaRadnogVremena.Data.Repositories.Interfaces;
 
 namespace EvidencijaRadnogVremena.Data.Repositories
 {

@@ -1,6 +1,4 @@
-﻿using EvidencijaRadnogVremena.Models;
-
-namespace EvidencijaRadnogVremena.Data.Repository.Interfaces
+﻿namespace EvidencijaRadnogVremena.Data.Repositories.Interfaces
 {
     public interface IUnitOfWork
     {

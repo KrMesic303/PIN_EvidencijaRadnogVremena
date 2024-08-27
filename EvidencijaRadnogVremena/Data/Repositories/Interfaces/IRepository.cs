@@ -1,4 +1,4 @@
-﻿namespace EvidencijaRadnogVremena.Data.Repository.Interfaces
+﻿namespace EvidencijaRadnogVremena.Data.Repositories.Interfaces
 {
     public interface IRepository<T> where T : class
     {
