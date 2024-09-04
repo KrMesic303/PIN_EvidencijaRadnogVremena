@@ -6,9 +6,9 @@ namespace EvidencijaRadnogVremena.Data.Repositories
     {
         private readonly AppDbContext _context;
 
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(IServiceScopeFactory serviceScopeFactory)
         {
-            _context = context;
+            _context = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
         }
 
         public async Task CompleteAsync()
@@ -20,16 +20,6 @@ namespace EvidencijaRadnogVremena.Data.Repositories
         {
             _context.Dispose();
             GC.SuppressFinalize(this);
-        }
-
-        Task IUnitOfWork.CommitAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IUnitOfWork.RollbackAsync()
-        {
-            throw new NotImplementedException();
         }
 
         //private IGenericRepository<Actor> _actors;
