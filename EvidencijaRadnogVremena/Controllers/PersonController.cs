@@ -8,26 +8,24 @@ namespace EvidencijaRadnogVremena.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IRepository<Person> _personRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PersonController(IRepository<Person> personRepository, IUnitOfWork unitOfWork)
+        public PersonController(IUnitOfWork unitOfWork)
         {
-            _personRepository = personRepository;
             _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
         {
-            var personrs = await _personRepository.GetAllAsync();
+            var personrs = await _unitOfWork.Persons.GetAllAsync();
             return Ok(personrs);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> GetPerson(int id)
         {
-            var person = await _personRepository.GetByIdAsync(id);
+            var person = await _unitOfWork.Persons.GetByIdAsync(id);
             if (person == null)
             {
                 return NotFound();
@@ -38,7 +36,7 @@ namespace EvidencijaRadnogVremena.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> CreatePerson(Person person)
         {
-            await _personRepository.AddAsync(person);
+            await _unitOfWork.Persons.AddAsync(person);
             await _unitOfWork.CompleteAsync();
             return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
         }
@@ -51,21 +49,21 @@ namespace EvidencijaRadnogVremena.Controllers
                 return BadRequest();
             }
 
-            _personRepository.Update(person);
+            _unitOfWork.Persons.Update(person);
             await _unitOfWork.CompleteAsync();
-            return NoContent();
+            return Ok(person);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {
-            var person = await _personRepository.GetByIdAsync(id);
+            var person = await _unitOfWork.Persons.GetByIdAsync(id);
             if (person == null)
             {
                 return NotFound();
             }
 
-            _personRepository.Delete(person);
+            _unitOfWork.Persons.Delete(person);
             await _unitOfWork.CompleteAsync();
             return NoContent();
         }

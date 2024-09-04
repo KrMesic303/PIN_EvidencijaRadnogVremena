@@ -1,5 +1,6 @@
 ﻿using EvidencijaRadnogVremena.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EvidencijaRadnogVremena.Data.Repository
 {
@@ -21,7 +22,14 @@ namespace EvidencijaRadnogVremena.Data.Repository
 
         public async Task<T> GetByIdAsync(int id)
         {
+#pragma warning disable CS8603 // Possible null reference return. Expected when id is wrong.
             return await _dbSet.FindAsync(id);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
         }
 
         public async Task AddAsync(T entity)

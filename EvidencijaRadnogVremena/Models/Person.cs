@@ -5,10 +5,10 @@
         public int Id { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+        public required double OIB { get; set; }
         public bool IsWorker { get; set; } = false;
         public string? Position { get; set; }
         public string? Company { get; set; }
-        public ICollection<Visit>? Visits { get; set; }
-        public ICollection<Vehicle>? Vehicles { get; set; }
+
     }
 }
