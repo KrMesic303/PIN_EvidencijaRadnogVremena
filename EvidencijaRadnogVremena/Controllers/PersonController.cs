@@ -22,10 +22,10 @@ namespace EvidencijaRadnogVremena.Controllers
             return Ok(personrs);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetPerson(int id)
+        [HttpGet("ById")]
+        public async Task<ActionResult<Person>> GetPerson(int personId)
         {
-            var person = await _unitOfWork.Persons.GetByIdAsync(id);
+            var person = await _unitOfWork.Persons.GetByIdAsync(personId);
             if (person == null)
             {
                 return NotFound();
@@ -41,10 +41,10 @@ namespace EvidencijaRadnogVremena.Controllers
             return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePerson(int id, Person person)
+        [HttpPut]
+        public async Task<IActionResult> UpdatePerson(int personId, Person person)
         {
-            if (id != person.Id)
+            if (personId != person.Id)
             {
                 return BadRequest();
             }
@@ -54,10 +54,10 @@ namespace EvidencijaRadnogVremena.Controllers
             return Ok(person);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePerson(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeletePerson(int personId)
         {
-            var person = await _unitOfWork.Persons.GetByIdAsync(id);
+            var person = await _unitOfWork.Persons.GetByIdAsync(personId);
             if (person == null)
             {
                 return NotFound();

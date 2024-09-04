@@ -26,9 +26,9 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpGet("ById")]
-        public async Task<ActionResult<AccessPoint>> GetAccessPointById([FromQuery] int id)
+        public async Task<ActionResult<AccessPoint>> GetAccessPointById([FromQuery] int accessPointId)
         {
-            var accessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(id);
+            var accessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(accessPointId);
 
             if (accessPoint == null) return NotFound();
             return Ok(accessPoint);
@@ -45,11 +45,11 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AccessPoint>> UpdateAccessPoint([FromQuery] int id, AccessPoint accessPoint)
+        public async Task<ActionResult<AccessPoint>> UpdateAccessPoint([FromQuery] int accessPointId, AccessPoint accessPoint)
         {
-            if(id != accessPoint.Id) return BadRequest("AccessPoint ID mismatch");
+            if(accessPointId != accessPoint.Id) return BadRequest("AccessPoint ID mismatch");
 
-            var existingAccessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(id);
+            var existingAccessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(accessPointId);
             if(existingAccessPoint == null) return NotFound();
 
             existingAccessPoint.Name = accessPoint.Name;
@@ -70,13 +70,13 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteAccessPoint([FromQuery] int id)
+        public async Task<ActionResult> DeleteAccessPoint([FromQuery] int accessPointId)
         {
-            var accessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(id);
+            var accessPoint = await _unitOfWork.AccessPoints.GetByIdAsync(accessPointId);
             if (accessPoint == null) return NotFound();
 
             //We do not delete access points because of reports, we just put status IsActive to false;
-            await _unitOfWork.AccessPoints.SetIsActiveStatus(id, false);
+            await _unitOfWork.AccessPoints.SetIsActiveStatus(accessPointId, false);
 
             await _unitOfWork.CompleteAsync();
             return Ok();

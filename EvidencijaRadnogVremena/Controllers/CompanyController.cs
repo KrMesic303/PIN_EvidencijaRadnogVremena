@@ -1,6 +1,8 @@
 ﻿using EvidencijaRadnogVremena.Data.Repositories.Interfaces;
 using EvidencijaRadnogVremena.Models;
+using EvidencijaRadnogVremena.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace EvidencijaRadnogVremena.Controllers
 {
@@ -23,38 +25,54 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpGet("ByName")]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompaniesByName([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<Company>>> GetCompaniesByName([FromQuery] string companyName)
         {
-            if(string.IsNullOrEmpty(name)) return BadRequest("Wrong parameter: \"name\"");
+            if(string.IsNullOrEmpty(companyName)) return BadRequest("Wrong parameter: \"name\"");
 
-            var companies = await _unitOfWork.Companies.FindAsync(n => n.Name.Contains(name));
+            var companies = await _unitOfWork.Companies.FindAsync(n => n.Name.Contains(companyName));
             
-            if (companies.Count() < 1) return NotFound();
+            if (companies.Count() == 0) return NotFound();
             return Ok(companies);
         }
 
         [HttpGet("ById")]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanyById([FromQuery] int id)
+        public async Task<ActionResult<IEnumerable<Company>>> GetCompanyById([FromQuery] int companyId)
         {
-            var company = await _unitOfWork.Companies.GetByIdAsync(id);
+            var company = await _unitOfWork.Companies.GetByIdAsync(companyId);
 
             if (company == null) return NotFound();
             return Ok(company);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddNewCompany(Company company)
+        public async Task<ActionResult> AddNewCompany(CompanyDto companyDto)
         {
+            var company = new Company()
+            {
+                Name = companyDto.Name,
+                Location = companyDto.Location,
+
+            };
+
             await _unitOfWork.Companies.AddAsync(company);
             await _unitOfWork.CompleteAsync();
 
             return CreatedAtAction(nameof(GetCompanyById), new  { id = company.Id }, company);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteCompanyById([FromQuery] int id)
+        [HttpPatch]
+        public async Task<ActionResult<Company>> UpdateCompany(Company company)
         {
-            var company = await _unitOfWork.Companies.GetByIdAsync(id);
+            _unitOfWork.Companies.Update(company);
+            await _unitOfWork.CompleteAsync();
+            return Ok(company);
+
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteCompanyById([FromQuery] int companyId)
+        {
+            var company = await _unitOfWork.Companies.GetByIdAsync(companyId);
             if(company == null) return NotFound();
             
             //Employee check
@@ -66,9 +84,9 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpDelete("Force")]
-        public async Task<ActionResult> ForceDeleteCompanyById([FromQuery] int id)
+        public async Task<ActionResult> ForceDeleteCompanyById([FromQuery] int companyId)
         {
-            var company = await _unitOfWork.Companies.GetByIdAsync(id);
+            var company = await _unitOfWork.Companies.GetByIdAsync(companyId);
             if (company == null) return NotFound();
 
             var employees = await _unitOfWork.Persons.FindAsync(n => n.Company == company.Name);

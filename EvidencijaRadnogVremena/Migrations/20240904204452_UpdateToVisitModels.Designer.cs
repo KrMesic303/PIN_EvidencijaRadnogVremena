@@ -4,6 +4,7 @@ using EvidencijaRadnogVremena.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EvidencijaRadnogVremena.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240904204452_UpdateToVisitModels")]
+    partial class UpdateToVisitModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,6 +160,10 @@ namespace EvidencijaRadnogVremena.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccessPointId");
+
+                    b.HasIndex("PersonId");
+
                     b.ToTable("Visits", (string)null);
                 });
 
@@ -167,6 +174,25 @@ namespace EvidencijaRadnogVremena.Migrations
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("EvidencijaRadnogVremena.Models.Visit", b =>
+                {
+                    b.HasOne("EvidencijaRadnogVremena.Models.AccessPoint", "AccessPoint")
+                        .WithMany()
+                        .HasForeignKey("AccessPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EvidencijaRadnogVremena.Models.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccessPoint");
 
                     b.Navigation("Person");
                 });
