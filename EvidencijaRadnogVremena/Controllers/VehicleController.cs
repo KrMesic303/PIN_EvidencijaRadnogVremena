@@ -13,5 +13,7 @@ namespace EvidencijaRadnogVremena.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
+        //TODO: If needed to expand, we can add Vehicle controls
     }
 }

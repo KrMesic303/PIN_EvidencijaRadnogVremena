@@ -9,7 +9,7 @@ namespace EvidencijaRadnogVremena.Data.Repositories.Interfaces
         //...
 
         //repositories
-        IRepository<AccessPoint> AccessPoints { get; }
+        IAccessPointRepository AccessPoints { get; }
         IRepository<Company> Companies { get; }
         IRepository<Person> Persons { get; }
         IRepository<Vehicle> Vehicles { get; }
