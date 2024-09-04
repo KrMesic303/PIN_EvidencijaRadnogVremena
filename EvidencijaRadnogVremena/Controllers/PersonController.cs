@@ -65,7 +65,7 @@ namespace EvidencijaRadnogVremena.Controllers
 
             _unitOfWork.Persons.Delete(person);
             await _unitOfWork.CompleteAsync();
-            return NoContent();
+            return Ok();
         }
     }
 }
