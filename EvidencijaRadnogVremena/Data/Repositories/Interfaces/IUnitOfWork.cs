@@ -7,8 +7,7 @@
         //...
 
         Task CompleteAsync();
-        Task CommitAsync();
-        Task RollbackAsync();
+
 
 
     }
