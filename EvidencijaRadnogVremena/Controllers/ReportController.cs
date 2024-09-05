@@ -24,5 +24,31 @@ namespace EvidencijaRadnogVremena.Controllers
 
             return Ok(employees);
         }
+
+        [HttpGet("OpenVisits")]
+        public async Task<ActionResult<IEnumerable<Visit>>> GetOpenVisitsForAccessPoint()
+        {
+            var visitsAtAccessPoint = await _unitOfWork.Visits.FindAsync(e => e.IsCheckedOut == false);
+
+            return Ok(visitsAtAccessPoint);
+        }
+
+        [HttpGet("ByAccessPoint")]
+        public async Task<ActionResult<IEnumerable<Visit>>> GetAllVisitsForAccessPoint([FromQuery] int accessPointId)
+        {
+            var visitsAtAccessPoint = await _unitOfWork.Visits.FindAsync(e => e.AccessPointId == accessPointId);
+
+            return Ok(visitsAtAccessPoint);
+        }
+
+        [HttpGet("DateTimeInterval")]
+        public async Task<ActionResult<IEnumerable<Visit>>> GetVisitsInInterval([FromQuery] DateTime from, [FromQuery] DateTime to)
+        {
+
+            var visits = await _unitOfWork.Visits.FindAsync(e => e.CheckInTime < to && e.CheckInTime > from);
+
+            return Ok(visits);
+        }
+
     }
 }

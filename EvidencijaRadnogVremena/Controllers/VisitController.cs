@@ -17,19 +17,9 @@ namespace EvidencijaRadnogVremena.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Visit>>> GetAllVisitsForAccessPoint([FromQuery] int accessPointId)
+        public async Task<ActionResult<IEnumerable<Visit>>> GetAllVisits()
         {
-            var visitsAtAccessPoint = await _unitOfWork.Visits.FindAsync(e  => e.AccessPointId == accessPointId);
-
-            return Ok(visitsAtAccessPoint);
-        }
-
-        [HttpGet("DateTimeInterval")]
-        public async Task<ActionResult<IEnumerable<Visit>>> GetVisitsInInterval([FromQuery] DateTime from, [FromQuery] DateTime to)
-        {
-
-            var visits = await _unitOfWork.Visits.FindAsync(e => e.CheckInTime < to && e.CheckInTime > from);
-
+            var visits = await _unitOfWork.Visits.GetAllAsync();
             return Ok(visits);
         }
 
@@ -50,6 +40,11 @@ namespace EvidencijaRadnogVremena.Controllers
 
             var visitor = await _unitOfWork.Persons.GetByIdAsync(visitDto.PersonId);
             if(visitor == null) return NotFound("Visitor not found, add visitor");
+
+            var openVisit = await _unitOfWork.Visits
+                .FindAsync(v => v.PersonId == visitDto.PersonId && v.IsCheckedOut == false);
+
+            if (openVisit != null) return BadRequest("Person is already checked in and has not checked out!");
 
             var visit = new Visit() 
             {
