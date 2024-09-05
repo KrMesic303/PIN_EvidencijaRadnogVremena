@@ -34,7 +34,6 @@ namespace EvidencijaRadnogVremena.Controllers
             return Ok(visitsAtAccessPoint);
         }
 
-        //Primjer za UnitOfWork
         [HttpGet("VisitsByPerson")]
         public async Task<ActionResult<IEnumerable<Visit>>> GetVisitsInInterval([FromQuery] int personId)
         {
