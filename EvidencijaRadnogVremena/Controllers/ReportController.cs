@@ -1,5 +1,6 @@
 ﻿using EvidencijaRadnogVremena.Data.Repositories.Interfaces;
 using EvidencijaRadnogVremena.Models;
+using EvidencijaRadnogVremena.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvidencijaRadnogVremena.Controllers
@@ -31,6 +32,31 @@ namespace EvidencijaRadnogVremena.Controllers
             var visitsAtAccessPoint = await _unitOfWork.Visits.FindAsync(e => e.IsCheckedOut == false);
 
             return Ok(visitsAtAccessPoint);
+        }
+
+        //Primjer za UnitOfWork
+        [HttpGet("VisitsByPerson")]
+        public async Task<ActionResult<IEnumerable<Visit>>> GetVisitsInInterval([FromQuery] int personId)
+        {
+            var person = await _unitOfWork.Persons.GetByIdAsync(personId);
+            if (person == null) return BadRequest("Person not found");
+
+            var visits = await _unitOfWork.Visits.FindAsync(p => p.PersonId == personId);
+
+            var report = visits.Select(visit => new PersonVisitReportDto
+            {
+                VisitId = visit.Id,
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                CompanyName = person.Company,
+                AccessPointId = visit.AccessPointId,
+                CheckInTime = visit.CheckInTime,
+                CheckOutTime = visit.CheckOutTime,
+                Description = visit.Description,
+                IsCheckedOut = visit.IsCheckedOut
+            }).ToList();
+
+            return Ok(report);
         }
 
         [HttpGet("ByAccessPoint")]
