@@ -60,6 +60,31 @@ namespace EvidencijaRadnogVremena.Controllers
             return CreatedAtAction(nameof(GetCompanyById), new  { id = company.Id }, company);
         }
 
+        //TODO: UnitOfWork example
+        [HttpPost("CompanyWithAccessPoint")]
+        public async Task<ActionResult> AddNewCompanyWithAccessPoint(CompanyDto companyDto)
+        {
+            var company = new Company()
+            {
+                Name = companyDto.Name,
+                Location = companyDto.Location,
+
+            };
+
+            await _unitOfWork.AccessPoints.AddAsync(new AccessPoint()
+            { 
+                Name = companyDto.Name,
+                Location = companyDto.Location,
+                Description = "Auto Created",
+                IsActive = true,
+            
+            });
+            await _unitOfWork.Companies.AddAsync(company);
+            await _unitOfWork.CompleteAsync();
+
+            return CreatedAtAction(nameof(GetCompanyById), new { id = company.Id }, company);
+        }
+
         [HttpPatch]
         public async Task<ActionResult<Company>> UpdateCompany(Company company)
         {
